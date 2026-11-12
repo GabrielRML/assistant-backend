@@ -1,0 +1,7 @@
+app:
+  security:
+    jwt-secret: dGVzdC1zZWNyZXQtdGVzdC1zZWNyZXQtdGVzdC1zZWNyZXQtMTIzNDU2Nzg5MA==
+  storage:
+    access-key: test
+    secret-key: test-secret
+    create-bucket-on-startup: false

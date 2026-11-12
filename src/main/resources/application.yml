@@ -1,0 +1,58 @@
+server:
+  port: ${SERVER_PORT:8080}
+spring:
+  application:
+    name: assistant-api
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/assistant}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: app
+        jdbc:
+          time_zone: UTC
+  flyway:
+    schemas: app,rag
+    default-schema: app
+    locations: classpath:db/migration
+  cloud:
+    openfeign:
+      client:
+        config:
+          rag:
+            connect-timeout: 5000
+            read-timeout: ${RAG_READ_TIMEOUT_MS:60000}
+app:
+  security:
+    jwt-secret: ${JWT_SECRET:y3IG9DnkUEZc4LbE3l5SvGhSEOcsW2Fd7+P/I6qUBstPTGw9lRqZuYlRcXRKUqNh}
+    jwt-expiration: PT8H
+    allowed-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:4200}
+    registration-enabled: ${REGISTRATION_ENABLED:true}
+  storage:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    public-endpoint: ${MINIO_PUBLIC_ENDPOINT:http://localhost:9000}
+    access-key: ${MINIO_ACCESS_KEY:minioadmin}
+    secret-key: ${MINIO_SECRET_KEY:minioadmin}
+    bucket: ${MINIO_BUCKET:assistant}
+    create-bucket-on-startup: true
+    upload-url-expiration: PT15M
+    download-url-expiration: PT5M
+  rag:
+    base-url: ${RAG_BASE_URL:http://localhost:8000}
+    timeout: PT60S
+  documents:
+    max-size: 50MB
+    pending-upload-ttl: PT24H
+    allowed-mime-types:
+      - application/pdf
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+      - text/plain
+      - text/markdown
